@@ -65,6 +65,13 @@ ELSE()
   SET (DEB_ZLIB_OPTION "system")
 ENDIF()
 
+# Debian 12 (Bookworm) specific configuration
+IF(DEB_CODENAME STREQUAL "bookworm")
+  MESSAGE(STATUS "Configuring for Debian 12 (Bookworm)")
+  # Debian 12 has modern libraries, use system versions
+  SET (DEB_ZLIB_OPTION "system")
+ENDIF()
+
 IF (WITH_NDB)
   SET (DEB_BASE_PRODUCT "cluster-")
   SET (DEB_BASE_PRODUCTC "Cluster ")

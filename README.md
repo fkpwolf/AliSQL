@@ -17,6 +17,7 @@
   <a href="https://github.com/alibaba/AliSQL/network/members"><img src="https://img.shields.io/github/forks/alibaba/AliSQL?style=for-the-badge&logo=github&color=8bc34a" alt="GitHub Forks"></a>
   <a href="https://github.com/alibaba/AliSQL/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL%202.0-blue?style=for-the-badge" alt="License"></a>
   <a href="https://github.com/alibaba/AliSQL/releases"><img src="https://img.shields.io/badge/MySQL-8.0.44%20LTS-orange?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL Version"></a>
+  <a href="https://github.com/fkpwolf/AliSQL/actions/workflows/build-debian12-packages.yml"><img src="https://github.com/fkpwolf/AliSQL/actions/workflows/build-debian12-packages.yml/badge.svg" alt="Build Debian 12 Packages"></a>
 </p>
 
 <p align="center">

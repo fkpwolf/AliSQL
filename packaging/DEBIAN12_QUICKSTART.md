@@ -2,6 +2,17 @@
 
 ## TL;DR - Build Minimal Packages
 
+### Option 1: GitHub Actions (Automated)
+
+Pre-built packages are automatically generated via GitHub Actions on every push.
+
+**Download from GitHub:**
+1. Go to [Actions](https://github.com/fkpwolf/AliSQL/actions/workflows/build-debian12-packages.yml)
+2. Click on the latest successful run
+3. Download artifacts from the "Artifacts" section
+
+### Option 2: Build Locally
+
 ```bash
 cd packaging
 ./build-debian12-package.sh --install-deps

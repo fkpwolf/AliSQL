@@ -1,0 +1,107 @@
+name: Build Debian 12 Packages
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: false
+        default: 'minimal'
+        type: choice
+        options:
+          - minimal
+          - with-tests
+          - full
+
+jobs:
+  build-debian12:
+    name: Build Debian 12 Packages
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo apt-get clean
+          echo "=== After cleanup ==="
+          df -h
+          
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          cd packaging
+          sudo ./build-debian12-package.sh --install-deps
+          
+      - name: Build packages (minimal)
+        if: github.event.inputs.build_type == '' || github.event.inputs.build_type == 'minimal'
+        run: |
+          cd packaging
+          ./build-debian12-package.sh
+          
+      - name: Build packages (with tests)
+        if: github.event.inputs.build_type == 'with-tests'
+        run: |
+          cd packaging
+          ./build-debian12-package.sh --with-tests
+          
+      - name: Build packages (full)
+        if: github.event.inputs.build_type == 'full'
+        run: |
+          cd packaging
+          ./build-debian12-package.sh --full-build --with-tests --with-debug
+          
+      - name: List built packages
+        run: |
+          echo "=== Built Packages ==="
+          ls -lh *.deb 2>/dev/null || ls -lh ../*.deb 2>/dev/null || echo "No packages found"
+          echo ""
+          echo "=== Total Size ==="
+          du -ch *.deb 2>/dev/null || du -ch ../*.deb 2>/dev/null || echo "No packages to measure"
+          
+      - name: Upload packages as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: debian12-packages-${{ github.event.inputs.build_type || 'minimal' }}-${{ github.sha }}
+          path: |
+            *.deb
+            ../*.deb
+          retention-days: 30
+          if-no-files-found: error
+          
+      - name: Upload build summary
+        if: always()
+        run: |
+          echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Type:** ${{ github.event.inputs.build_type || 'minimal' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Packages Built" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ls -lh *.deb 2>/dev/null || ls -lh ../*.deb 2>/dev/null || echo "No packages found" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  validate-config:
+    name: Validate Configuration
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run validation tests
+        run: |
+          bash packaging/test-debian12-config.sh

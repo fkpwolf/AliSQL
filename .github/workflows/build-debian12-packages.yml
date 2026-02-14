@@ -1,0 +1,60 @@
+name: Build Debian 12 Packages
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'CMake build type'
+        required: false
+        default: 'Release'
+        type: choice
+        options:
+          - Release
+          - RelWithDebInfo
+
+jobs:
+  build-deb12:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:12
+
+    steps:
+      - name: Install git
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends git ca-certificates
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            build-essential cmake pkg-config \
+            libssl-dev libncurses5-dev libaio-dev libcurl4-openssl-dev \
+            libnuma-dev libldap2-dev libsasl2-dev \
+            bison patchelf fakeroot dpkg-dev \
+            zlib1g-dev
+
+      - name: Build package
+        run: |
+          BUILD_TYPE="${{ github.event.inputs.build_type || 'Release' }}"
+          packaging/build-debian12-package.sh --build-type "$BUILD_TYPE"
+
+      - name: Show package info
+        run: |
+          ls -lh build-deb12/*.deb
+          dpkg-deb --info build-deb12/*.deb
+          dpkg-deb --contents build-deb12/*.deb | head -60
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alisql-debian12-package
+          path: build-deb12/*.deb
+          retention-days: 30

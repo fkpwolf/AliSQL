@@ -5,13 +5,11 @@
 From the repository root on a Debian 12 system:
 
 ```bash
-# Install dependencies and build (as root)
+# Install dependencies then build in one go (as root)
 sudo packaging/build-debian12-package.sh --install-deps
 
-# Or install dependencies separately, then build as a regular user
+# Or install dependencies first, then build as a regular user
 sudo packaging/build-debian12-package.sh --install-deps
-# (the flag only installs deps when run alone before cmake; to split the steps
-#  call --install-deps first, then run the script again without it)
 packaging/build-debian12-package.sh
 ```
 

@@ -73,7 +73,31 @@ Use your existing MySQL tools, drivers, and SQL — zero learning curve
 
 ## Quick Start
 
-### Option 1: Build from Source
+### Option 1: Install Debian 12 Packages (Recommended)
+
+Pre-built, optimized packages for Debian 12 (Bookworm) and compatible systems:
+
+```bash
+# Clone the repository
+git clone https://github.com/alibaba/AliSQL.git
+cd AliSQL
+
+# Build minimal packages (~200MB)
+cd packaging
+./build-debian12-package.sh --install-deps
+
+# Install packages
+cd ..
+sudo dpkg -i *.deb
+
+# Start MySQL
+sudo systemctl start mysql
+sudo systemctl enable mysql
+```
+
+📖 **See [packaging/DEBIAN12_QUICKSTART.md](packaging/DEBIAN12_QUICKSTART.md) for detailed instructions**
+
+### Option 2: Build from Source
 
 ```bash
 # Clone the repository
@@ -87,7 +111,7 @@ sh build.sh -t release -d ~/alisql
 make install
 ```
 
-### Option 2: Set Up a DuckDB Analytical Node
+### Option 3: Set Up a DuckDB Analytical Node
 
 > **Step-by-step guide:** [How to set up a DuckDB node](./wiki/duckdb/how-to-setup-duckdb-node-en.md)
 

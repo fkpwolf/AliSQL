@@ -140,10 +140,10 @@ build_packages() {
     # -b: Binary-only build (faster, no source package)
     # -j$(nproc): Use all available CPU cores
     
-    local dpkg_args="-us -uc -b"
+    local dpkg_args=(-us -uc -b -j$(nproc))
     
     log_info "Running dpkg-buildpackage..."
-    dpkg-buildpackage $dpkg_args -j$(nproc) || {
+    dpkg-buildpackage "${dpkg_args[@]}" || {
         log_error "Package build failed"
         return 1
     }

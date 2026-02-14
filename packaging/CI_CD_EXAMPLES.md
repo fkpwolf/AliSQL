@@ -453,5 +453,5 @@ Example with Prometheus metrics:
 - name: Export metrics
   run: |
     echo "build_duration_seconds $(date +%s)" >> metrics.txt
-    echo "package_size_bytes $(stat -f%z ../*.deb)" >> metrics.txt
+    echo "package_size_bytes $(stat -c%s ../*.deb)" >> metrics.txt
 ```

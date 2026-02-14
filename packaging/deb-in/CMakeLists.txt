@@ -59,16 +59,13 @@ ENDIF()
 string(TOLOWER "${DEB_ID}" DEB_ID)
 
 # Ubuntu 20.04 and 22.04 has too old zlib
+# Debian 12 (Bookworm) has modern libraries, use system versions
 IF(DEB_CODENAME STREQUAL "focal" OR DEB_CODENAME STREQUAL "jammy")
   SET (DEB_ZLIB_OPTION "bundled")
-ELSE()
-  SET (DEB_ZLIB_OPTION "system")
-ENDIF()
-
-# Debian 12 (Bookworm) specific configuration
-IF(DEB_CODENAME STREQUAL "bookworm")
+ELSEIF(DEB_CODENAME STREQUAL "bookworm")
   MESSAGE(STATUS "Configuring for Debian 12 (Bookworm)")
-  # Debian 12 has modern libraries, use system versions
+  SET (DEB_ZLIB_OPTION "system")
+ELSE()
   SET (DEB_ZLIB_OPTION "system")
 ENDIF()
 

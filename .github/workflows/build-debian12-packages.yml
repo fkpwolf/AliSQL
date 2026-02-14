@@ -16,6 +16,9 @@ on:
           - Release
           - RelWithDebInfo
 
+permissions:
+  contents: read
+
 jobs:
   build-deb12:
     runs-on: ubuntu-latest

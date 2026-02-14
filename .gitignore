@@ -31,3 +31,12 @@ scalability_jobs_*
 .cproject
 .project
 .settings/
+
+# Debian packaging build artifacts
+debian/
+*.deb
+*.ddeb
+*.dsc
+*.changes
+*.buildinfo
+install-alisql-packages.sh
